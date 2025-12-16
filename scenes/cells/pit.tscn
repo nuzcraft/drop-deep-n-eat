@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=3 uid="uid://bos6ll5ssitbh"]
+
+[ext_resource type="PackedScene" uid="uid://cu0lk0m5h5or8" path="res://scenes/cells/cell.tscn" id="1_bhlmt"]
+[ext_resource type="Script" uid="uid://b1fvi182ypbu7" path="res://scenes/cells/pit.gd" id="2_2xl5a"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2xl5a"]
+load_path = "res://.godot/imported/wanderlust_16x16.png-08b69c9351a7d4573720e75d8f8e35b9.ctex"
+
+[node name="Pit" instance=ExtResource("1_bhlmt")]
+collision_layer = 4
+script = ExtResource("2_2xl5a")
+depth = 0
+cell_name = "Pit"
+background_color = Color(0, 0, 0, 1)
+collision_disabled = false
+
+[node name="BackgroundSprite" parent="." index="0"]
+modulate = Color(0, 0, 0, 1)
+
+[node name="ForegroundSprite" parent="." index="1"]
+texture = SubResource("CompressedTexture2D_2xl5a")
+region_rect = Rect2(0, 32, 16, 16)
+
+[node name="Label" type="Label" parent="." index="3"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1

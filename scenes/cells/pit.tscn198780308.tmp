@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://bos6ll5ssitbh"]
+
+[ext_resource type="PackedScene" uid="uid://cu0lk0m5h5or8" path="res://scenes/cells/cell.tscn" id="1_bhlmt"]
+[ext_resource type="Script" uid="uid://b1fvi182ypbu7" path="res://scenes/cells/pit.gd" id="2_2xl5a"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2xl5a"]
+load_path = "res://.godot/imported/wanderlust_16x16.png-08b69c9351a7d4573720e75d8f8e35b9.ctex"
+
+[node name="Pit" instance=ExtResource("1_bhlmt")]
+collision_layer = 4
+script = ExtResource("2_2xl5a")
+depth = 0
+
+[node name="BackgroundSprite" parent="." index="0"]
+modulate = Color(0, 0, 0, 1)
+
+[node name="ForegroundSprite" parent="." index="1"]
+texture = SubResource("CompressedTexture2D_2xl5a")
+region_rect = Rect2(0, 32, 16, 16)

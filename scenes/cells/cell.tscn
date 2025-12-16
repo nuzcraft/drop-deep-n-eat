@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://cu0lk0m5h5or8"]
+
+[ext_resource type="Texture2D" uid="uid://dr48mbi8nqgs2" path="res://assets/wanderlust_16x16.png" id="1_ec3ox"]
+[ext_resource type="Script" uid="uid://bpu8wkjbvdvju" path="res://scenes/cells/cell.gd" id="1_ptotn"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ptotn"]
+load_path = "res://.godot/imported/wanderlust_16x16.png-08b69c9351a7d4573720e75d8f8e35b9.ctex"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ptotn"]
+size = Vector2(16, 16)
+
+[node name="Cell" type="StaticBody2D"]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_ptotn")
+
+[node name="BackgroundSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_ec3ox")
+region_enabled = true
+region_rect = Rect2(176, 208, 16, 16)
+
+[node name="ForegroundSprite" type="Sprite2D" parent="."]
+texture = SubResource("CompressedTexture2D_ptotn")
+region_enabled = true
+region_rect = Rect2(16, 0, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ptotn")
+disabled = true

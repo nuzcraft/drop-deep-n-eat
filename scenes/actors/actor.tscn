@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://dlhnf0c5fpu3b"]
+
+[ext_resource type="Script" uid="uid://dwne2uf12v8oq" path="res://scenes/actors/actor.gd" id="1_k3bm4"]
+[ext_resource type="Texture2D" uid="uid://dr48mbi8nqgs2" path="res://assets/wanderlust_16x16.png" id="1_vpdwn"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_k3bm4"]
+radius = 7.0
+
+[node name="Actor" type="CharacterBody2D"]
+z_index = 1
+motion_mode = 1
+script = ExtResource("1_k3bm4")
+
+[node name="BackgroundSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_vpdwn")
+region_enabled = true
+region_rect = Rect2(176, 208, 16, 16)
+
+[node name="ForegroundSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_vpdwn")
+region_enabled = true
+region_rect = Rect2(0, 64, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_k3bm4")

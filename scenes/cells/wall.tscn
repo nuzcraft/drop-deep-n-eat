@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dr80n3nbw26bf"]
+
+[ext_resource type="PackedScene" uid="uid://cu0lk0m5h5or8" path="res://scenes/cells/cell.tscn" id="1_6aw0j"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6aw0j"]
+load_path = "res://.godot/imported/wanderlust_16x16.png-08b69c9351a7d4573720e75d8f8e35b9.ctex"
+
+[node name="Wall" instance=ExtResource("1_6aw0j")]
+collision_layer = 2
+cell_name = "Wall"
+background_color = Color(0, 0, 0, 1)
+foreground_color = Color(1, 1, 1, 1)
+collision_disabled = false
+
+[node name="ForegroundSprite" parent="." index="1"]
+modulate = Color(0, 0, 0, 1)
+texture = SubResource("CompressedTexture2D_6aw0j")
+region_rect = Rect2(48, 32, 16, 16)
