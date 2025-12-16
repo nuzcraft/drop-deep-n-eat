@@ -8,8 +8,8 @@ load_path = "res://.godot/imported/wanderlust_16x16.png-08b69c9351a7d4573720e75d
 [node name="Wall" instance=ExtResource("1_6aw0j")]
 collision_layer = 2
 cell_name = "Wall"
-background_color = Color(0, 0, 0, 1)
-foreground_color = Color(1, 1, 1, 1)
+background_color = Color(0.1254902, 0.08235294, 0.2, 1)
+foreground_color = Color(0, 0.59607846, 0.85882354, 1)
 collision_disabled = false
 
 [node name="ForegroundSprite" parent="." index="1"]

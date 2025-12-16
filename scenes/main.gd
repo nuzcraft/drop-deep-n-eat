@@ -70,8 +70,8 @@ func new_level() -> void:
 					add_child(pit_cell)
 					pit_cell.position = Vector2(j * tile_size, i * tile_size)
 					var eased_noise = -(cos(PI * noise_at_pos_2) - 1) / 2.0
-					var accent_color: Color = Color.RED.lerp(Color.BLUE, float(Globals.depth) / 50)
-					var color: Color = Color.BLACK.lerp(accent_color, eased_noise)
+					var accent_color: Color = Color("#1e579c").lerp(Color("#0ce6f2"), float(Globals.depth) / 50)
+					var color: Color = Color("#201533").lerp(accent_color, eased_noise)
 					pit_cell.background_sprite.modulate = color
 					if noise_at_pos_2 <= 0.05:
 						#pit_cell.background_sprite.modulate = Color.RED
