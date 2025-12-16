@@ -9,7 +9,7 @@ load_path = "res://.godot/imported/wanderlust_16x16.png-08b69c9351a7d4573720e75d
 collision_layer = 2
 cell_name = "Wall"
 background_color = Color(0.1254902, 0.08235294, 0.2, 1)
-foreground_color = Color(0, 0.59607846, 0.85882354, 1)
+foreground_color = Color(0.1254902, 0.20784314, 0.38431373, 1)
 collision_disabled = false
 
 [node name="ForegroundSprite" parent="." index="1"]

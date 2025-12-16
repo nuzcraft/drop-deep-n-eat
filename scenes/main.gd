@@ -10,8 +10,9 @@ const HERO = preload("uid://s3fewhnrigr8")
 @onready var depth_value_label: Label = $UILayer/HBoxContainer/VBoxContainer/HBoxContainer2/DepthValueLabel
 @onready var health_value_label: Label = $UILayer/HBoxContainer/VBoxContainer/HBoxContainer/HealthValueLabel
 @onready var score_container: HBoxContainer = $UILayer/ScoreControl/ScoreContainer
-@onready var score_label: RichTextLabel = $UILayer/ScoreControl/ScoreContainer/ScoreLabel
 @onready var score_control: Control = $UILayer/ScoreControl
+@onready var score_label: RichTextLabel = $UILayer/ScoreControl/ScoreContainer/VBoxContainer/ScoreLabel
+@onready var restart_button: Button = $UILayer/ScoreControl/ScoreContainer/VBoxContainer/RestartButton
 
 var hero: Actor
 
@@ -70,7 +71,7 @@ func new_level() -> void:
 					add_child(pit_cell)
 					pit_cell.position = Vector2(j * tile_size, i * tile_size)
 					var eased_noise = -(cos(PI * noise_at_pos_2) - 1) / 2.0
-					var accent_color: Color = Color("#1e579c").lerp(Color("#0ce6f2"), float(Globals.depth) / 50)
+					var accent_color: Color = Color("#0ce6f2").lerp(Color("#203562"), float(Globals.depth) / 75)
 					var color: Color = Color("#201533").lerp(accent_color, eased_noise)
 					pit_cell.background_sprite.modulate = color
 					if noise_at_pos_2 <= 0.05:
@@ -123,6 +124,13 @@ func _on_hero_pit_collision(dep: int) -> void:
 		Globals.depth += dep
 	
 func _on_hero_died() -> void:
+	end_game()
+
+
+func _on_timer_timeout() -> void:
+	end_game()
+
+func end_game() -> void:
 	Globals.game_over = true
 	timer.stop()
 	score_control.show()
@@ -134,3 +142,8 @@ Depth + ¢
 %d + %d
 [hr]
 [wave][b]%d points![/b][/wave]" % [Globals.depth, Globals.money, Globals.depth + Globals.money]
+	restart_button.grab_focus()
+
+
+func _on_restart_button_pressed() -> void:
+	get_tree().reload_current_scene()
