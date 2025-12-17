@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://32ql8h4vqmth"]
+[gd_scene load_steps=6 format=3 uid="uid://32ql8h4vqmth"]
 
 [ext_resource type="Script" uid="uid://bohldwrst0srv" path="res://scenes/main.gd" id="1_o5qli"]
 [ext_resource type="Shader" uid="uid://ibql5kc74aiv" path="res://resources/shaders/blur.gdshader" id="2_0wfyh"]
+[ext_resource type="Script" uid="uid://cywdyyys355ko" path="res://scenes/camera_2d.gd" id="2_jyhfs"]
 [ext_resource type="Theme" uid="uid://dc6mvo4jbes33" path="res://main.theme" id="2_sugp2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sugp2"]
@@ -15,6 +16,7 @@ script = ExtResource("1_o5qli")
 [node name="Camera2D" type="Camera2D" parent="."]
 offset = Vector2(132, 132)
 zoom = Vector2(2, 2)
+script = ExtResource("2_jyhfs")
 
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1
@@ -72,17 +74,36 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 
-[node name="Control" type="Control" parent="UILayer/HBoxContainer"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="UILayer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+alignment = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="UILayer/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StartButton" type="Button" parent="UILayer/HBoxContainer/VBoxContainer3/CenterContainer"]
+layout_mode = 2
+text = "Start Game!"
+
+[node name="Label" type="Label" parent="UILayer/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "WASD or ARROWS to move"
+horizontal_alignment = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="UILayer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
+[node name="Control" type="Control" parent="UILayer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+size_flags_vertical = 10
 alignment = 1
 
 [node name="TimeValueLabel" type="Label" parent="UILayer/HBoxContainer/VBoxContainer2/HBoxContainer"]
@@ -98,6 +119,7 @@ text = "seconds"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="UILayer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+size_flags_vertical = 2
 alignment = 1
 
 [node name="MoneyValueLabel" type="Label" parent="UILayer/HBoxContainer/VBoxContainer2/HBoxContainer2"]
@@ -111,7 +133,24 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = ":¢"
 
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UILayer/HBoxContainer/VBoxContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "depth = points
+[color=6f9b6c]¢ = points[/color]
+[outline_size=6][outline_color=][color=201533]dark spot = deep hole[/color][/outline_color][/outline_size]
+and more fall damage
+eat [color=d86660]snacks[/color] to heal up"
+horizontal_alignment = 2
+
 [node name="ScoreControl" type="Control" parent="UILayer"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -179,7 +218,7 @@ size_flags_stretch_ratio = 2.0
 [node name="Timer" type="Timer" parent="."]
 wait_time = 30.0
 one_shot = true
-autostart = true
 
+[connection signal="pressed" from="UILayer/HBoxContainer/VBoxContainer3/CenterContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="UILayer/ScoreControl/ScoreContainer/VBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

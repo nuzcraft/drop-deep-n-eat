@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://o0necelm455x"]
+
+[ext_resource type="PackedScene" uid="uid://dlhnf0c5fpu3b" path="res://scenes/actors/actor.tscn" id="1_wt5ff"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_wt5ff"]
+load_path = "res://.godot/imported/wanderlust_16x16.png-08b69c9351a7d4573720e75d8f8e35b9.ctex"
+
+[node name="Money" instance=ExtResource("1_wt5ff")]
+collision_layer = 8
+collision_mask = 0
+actor_name = "Money"
+background_color = Color(0.43499014, 0.6097125, 0.42419437, 1)
+collision_disabled = false
+
+[node name="ForegroundSprite" parent="." index="1"]
+texture = SubResource("CompressedTexture2D_wt5ff")
+region_rect = Rect2(176, 144, 16, 16)

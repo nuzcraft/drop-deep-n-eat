@@ -4,24 +4,36 @@ const WALL = preload("uid://dr80n3nbw26bf")
 const PIT = preload("uid://bos6ll5ssitbh")
 const FLOOR = preload("uid://b3wvsopo3g3qe")
 const HERO = preload("uid://s3fewhnrigr8")
+const SNACK = preload("uid://d3gqgwwmqgpp5")
+const MONEY = preload("uid://o0necelm455x")
 
 @onready var timer: Timer = $Timer
 @onready var time_value_label: Label = $UILayer/HBoxContainer/VBoxContainer2/HBoxContainer/TimeValueLabel
 @onready var depth_value_label: Label = $UILayer/HBoxContainer/VBoxContainer/HBoxContainer2/DepthValueLabel
 @onready var health_value_label: Label = $UILayer/HBoxContainer/VBoxContainer/HBoxContainer/HealthValueLabel
+@onready var money_value_label: Label = $UILayer/HBoxContainer/VBoxContainer2/HBoxContainer2/MoneyValueLabel
 @onready var score_container: HBoxContainer = $UILayer/ScoreControl/ScoreContainer
 @onready var score_control: Control = $UILayer/ScoreControl
 @onready var score_label: RichTextLabel = $UILayer/ScoreControl/ScoreContainer/VBoxContainer/ScoreLabel
 @onready var restart_button: Button = $UILayer/ScoreControl/ScoreContainer/VBoxContainer/RestartButton
+@onready var start_button: Button = $UILayer/HBoxContainer/VBoxContainer3/CenterContainer/StartButton
+@onready var camera_2d: Camera2D = $Camera2D
 
 var hero: Actor
+var _client: GdftClient
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	_client = preload("res://scenes/gdft.gd").new()
+	add_child(_client)
+	#_client.enable_debug_view = true
+	_client.start_polling()
+		
 	score_control.hide()
 	clear_level()
-	new_level()
 	Globals.depth += 1
+	new_level()
+	$UILayer/HBoxContainer/VBoxContainer3/CenterContainer/StartButton.grab_focus()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -32,6 +44,7 @@ func _process(_delta: float) -> void:
 	#pass
 	time_value_label.text = "%0.2f" % timer.time_left
 	depth_value_label.text = str(Globals.depth)
+	money_value_label.text = str(Globals.money)
 	if hero:
 		if hero.has_node("HealthComponent"):
 			var hc: HealthComponent = hero.get_node("HealthComponent")
@@ -43,6 +56,8 @@ func clear_level() -> void:
 	for child in get_children():
 		if child is Cell:
 			child.queue_free()
+		if child is Actor and (child.actor_name == "Snack" or child.actor_name == "Money"):
+			child.queue_free()
 
 func new_level() -> void:
 	var tile_size: int = 16
@@ -52,80 +67,117 @@ func new_level() -> void:
 	var floor_positions: Array[Vector2] = []
 	for i in range(17):
 		for j in range(17):
-			#print(noise.get_noise_2d(j*50, i*50))
-			if i == 0 or i == 16 or j == 0 or j == 16:
-				var wall_cell: Cell = WALL.instantiate()
-				add_child(wall_cell)
-				wall_cell.position = Vector2(j * tile_size, i * tile_size)
-			else:
-				var noise_at_pos: float = noise.get_noise_2d(j * zoom, i * zoom) + 1
-				if int(floor(noise_at_pos)) == 1:
-					var floor_cell: Cell = FLOOR.instantiate()
-					add_child(floor_cell)
-					var pos = Vector2(j * tile_size, i * tile_size)
-					floor_cell.position = pos
-					floor_positions.append(pos)
+			if Globals.depth < 100:
+				if i == 0 or i == 16 or j == 0 or j == 16:
+					var wall_cell: Cell = WALL.instantiate()
+					add_child(wall_cell)
+					wall_cell.position = Vector2(j * tile_size, i * tile_size)
 				else:
-					var noise_at_pos_2 = (noise.get_noise_2d((j + 5) * zoom, (i + 5) * zoom) + 1) / 2.0
-					var pit_cell: Pit = PIT.instantiate()
-					add_child(pit_cell)
-					pit_cell.position = Vector2(j * tile_size, i * tile_size)
-					var eased_noise = -(cos(PI * noise_at_pos_2) - 1) / 2.0
-					var accent_color: Color = Color("#0ce6f2").lerp(Color("#203562"), float(Globals.depth) / 75)
-					var color: Color = Color("#201533").lerp(accent_color, eased_noise)
-					pit_cell.background_sprite.modulate = color
-					if noise_at_pos_2 <= 0.05:
-						#pit_cell.background_sprite.modulate = Color.RED
-						pit_cell.depth = 10
-					elif noise_at_pos_2 <= 0.1:
-						#pit_cell.background_sprite.modulate = Color.ORANGE
-						pit_cell.depth = 9
-					elif noise_at_pos_2 <= 0.15:
-						#pit_cell.background_sprite.modulate = Color.YELLOW
-						pit_cell.depth = 8
-					elif noise_at_pos_2 <= 0.2:
-						#pit_cell.background_sprite.modulate = Color.GREEN
-						pit_cell.depth = 7
-					elif noise_at_pos_2 <= 0.3:
-						#pit_cell.background_sprite.modulate = Color.BLUE
-						pit_cell.depth = 6
-					elif noise_at_pos_2 <= 0.4:
-						#pit_cell.background_sprite.modulate = Color.PURPLE
-						pit_cell.depth = 5
-					elif noise_at_pos_2 <= 0.55:
-						#pit_cell.background_sprite.modulate = Color.PINK
-						pit_cell.depth = 4
-					elif noise_at_pos_2 <= 0.7:
-						#pit_cell.background_sprite.modulate = Color.LIGHT_GRAY
-						pit_cell.depth = 3
-					elif noise_at_pos_2 <= 0.85:
-						#pit_cell.background_sprite.modulate = Color.DARK_GRAY
-						pit_cell.depth = 2
+					var noise_at_pos: float = noise.get_noise_2d(j * zoom, i * zoom) + 1
+					if int(floor(noise_at_pos)) == 1:
+						var floor_cell: Cell = FLOOR.instantiate()
+						add_child(floor_cell)
+						var pos = Vector2(j * tile_size, i * tile_size)
+						floor_cell.position = pos
+						floor_positions.append(pos)
 					else:
-						pit_cell.depth = 1
+						var noise_at_pos_2 = (noise.get_noise_2d((j + 5) * zoom, (i + 5) * zoom) + 1) / 2.0
+						var pit_cell: Pit = PIT.instantiate()
+						add_child(pit_cell)
+						pit_cell.position = Vector2(j * tile_size, i * tile_size)
+						var eased_noise = -(cos(PI * noise_at_pos_2) - 1) / 2.0
+						var accent_color: Color = Color("#0ce6f2").lerp(Color("#ffb7a7"), float(Globals.depth) / 75)
+						var color: Color = Color("#201533").lerp(accent_color, eased_noise)
+						pit_cell.background_sprite.modulate = color
+						if noise_at_pos_2 <= 0.05:
+							#pit_cell.background_sprite.modulate = Color.RED
+							pit_cell.depth = 10
+						elif noise_at_pos_2 <= 0.1:
+							#pit_cell.background_sprite.modulate = Color.ORANGE
+							pit_cell.depth = 9
+						elif noise_at_pos_2 <= 0.15:
+							#pit_cell.background_sprite.modulate = Color.YELLOW
+							pit_cell.depth = 8
+						elif noise_at_pos_2 <= 0.2:
+							#pit_cell.background_sprite.modulate = Color.GREEN
+							pit_cell.depth = 7
+						elif noise_at_pos_2 <= 0.3:
+							#pit_cell.background_sprite.modulate = Color.BLUE
+							pit_cell.depth = 6
+						elif noise_at_pos_2 <= 0.4:
+							#pit_cell.background_sprite.modulate = Color.PURPLE
+							pit_cell.depth = 5
+						elif noise_at_pos_2 <= 0.55:
+							#pit_cell.background_sprite.modulate = Color.PINK
+							pit_cell.depth = 4
+						elif noise_at_pos_2 <= 0.7:
+							#pit_cell.background_sprite.modulate = Color.LIGHT_GRAY
+							pit_cell.depth = 3
+						elif noise_at_pos_2 <= 0.85:
+							#pit_cell.background_sprite.modulate = Color.DARK_GRAY
+							pit_cell.depth = 2
+						else:
+							pit_cell.depth = 1
+			else:
+				var floor_cell: Cell = FLOOR.instantiate()
+				add_child(floor_cell)
+				var pos = Vector2(j * tile_size, i * tile_size)
+				floor_cell.position = pos
+				floor_positions.append(pos)	
 	if not hero:
 		hero = HERO.instantiate()
 		add_child(hero)
 		if hero.has_node("PlayerComponent"):
 			var player_component: PlayerComponent = hero.get_node("PlayerComponent")
 			player_component.pit_collision.connect(_on_hero_pit_collision)
+			player_component.snack_collision.connect(_on_hero_snack_collision)
+			player_component.coin_collision.connect(_on_hero_coin_collision)
 		if hero.has_node("HealthComponent"):
 			var health_component: HealthComponent = hero.get_node("HealthComponent")
 			health_component.died.connect(_on_hero_died)
 	var new_pos = floor_positions.pick_random()
 	hero.position = new_pos
+	if Globals.depth < 100:
+		for i in range(3):
+			var snack := SNACK.instantiate()
+			add_child(snack)
+			snack.position = floor_positions.pick_random()
+		for i in range(3):
+			var money := MONEY.instantiate()
+			add_child(money)
+			money.position = floor_positions.pick_random()
+	else:
+		for i in range(20):
+			var money := MONEY.instantiate()
+			add_child(money)
+			money.position = floor_positions.pick_random()
 	
 func _on_hero_pit_collision(dep: int) -> void:
 	hero.get_node("HealthComponent").take_damage(floor(dep / 2.0))
 	if not Globals.game_over:
 		clear_level()
+		Globals.depth += dep
+		if Globals.depth > 100: Globals.depth = 100
 		new_level()
 		hero.get_node("PlayerComponent").interrupt_movement()
-		Globals.depth += dep
+		camera_2d.add_screenshake(0.3)
+		send_score(false)
+		
+func _on_hero_snack_collision(snack: Actor) -> void:
+	snack.queue_free()
+	hero.get_node("HealthComponent").heal(2)
+	
+func _on_hero_coin_collision(coin: Actor) -> void:
+	coin.queue_free()
+	Globals.money += 1
+	send_score(false)
 	
 func _on_hero_died() -> void:
 	end_game()
-
+	
+func send_score(final: bool) -> void:
+	var score = Globals.depth + Globals.money
+	_client.send_score(score, final)
 
 func _on_timer_timeout() -> void:
 	end_game()
@@ -137,13 +189,26 @@ func end_game() -> void:
 	score_container.show()
 	score_label.show()
 	score_label.text = "[b]Final Score[/b]
-Depth + ¢
+Depth & ¢
 [hr]
-%d + %d
+%d & %d¢
 [hr]
 [wave][b]%d points![/b][/wave]" % [Globals.depth, Globals.money, Globals.depth + Globals.money]
+	send_score(true)
 	restart_button.grab_focus()
-
 
 func _on_restart_button_pressed() -> void:
 	get_tree().reload_current_scene()
+	Globals.game_over = false
+	Globals.game_start = false
+	Globals.depth = 0
+	Globals.money = 0
+
+
+func _on_start_button_pressed() -> void:
+	start_game()
+	start_button.hide()
+	
+func start_game() -> void:
+	Globals.game_start = true
+	timer.start()

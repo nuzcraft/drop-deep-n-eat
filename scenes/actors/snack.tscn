@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3gqgwwmqgpp5"]
+
+[ext_resource type="PackedScene" uid="uid://dlhnf0c5fpu3b" path="res://scenes/actors/actor.tscn" id="1_3is1p"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_wpjok"]
+load_path = "res://.godot/imported/wanderlust_16x16.png-08b69c9351a7d4573720e75d8f8e35b9.ctex"
+
+[node name="Snack" instance=ExtResource("1_3is1p")]
+collision_layer = 16
+collision_mask = 0
+actor_name = "Snack"
+background_color = Color(0.84626013, 0.3993375, 0.3769741, 1)
+collision_disabled = false
+
+[node name="ForegroundSprite" parent="." index="1"]
+texture = SubResource("CompressedTexture2D_wpjok")
+region_rect = Rect2(96, 16, 16, 16)
